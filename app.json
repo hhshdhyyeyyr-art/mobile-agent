@@ -11,7 +11,7 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/7944daea-4e83-4c42-8bb5-604ac6ec6ea8"
+      "url": "https://u.expo.dev/0d677072-e011-4de3-b0d5-5c2225cd2247"
     },
     "ios": {
       "icon": "./assets/expo.icon",
@@ -106,9 +106,10 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "7944daea-4e83-4c42-8bb5-604ac6ec6ea8"
+        "projectId": "0d677072-e011-4de3-b0d5-5c2225cd2247"
       }
     },
-    "owner": "tecnicalbot"
+    "owner": "mobileagent"
   }
 }
+
