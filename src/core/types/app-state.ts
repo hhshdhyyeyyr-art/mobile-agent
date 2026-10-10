@@ -347,7 +347,10 @@ export type ScheduleRun = {
 
 export type MessageMetadata = {
   agentName?: string | null;
+  
   appliedSkillIds?: string[];
+    createdFileIds?: string[];
+  
   executionTimeline?: ExecutionTimelineEvent[];
   externalFolderDisplayName?: string | null;
   fileContextSource?: FileContextSource;
