@@ -4,9 +4,9 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import { useState } from "react";
-import { ActivityIndicator } from "react-native";
 
 import { Button } from "@/components/ui/button";
+import { GoogleIcon } from "@/components/account/google-icon";
 import { GOOGLE_WEB_CLIENT_ID } from "@/modules/account/config";
 import { useAccount } from "@/providers/account-auth";
 
@@ -61,8 +61,12 @@ export function GoogleSignInButton({ label }: { label: string }) {
 
   return (
     <>
-      <Button variant="outline" disabled={busy} onPress={handlePress}>
-        {busy ? <ActivityIndicator size="small" /> : null}
+      <Button
+        variant="outline"
+        loading={busy}
+        leftIcon={<GoogleIcon />}
+        onPress={handlePress}
+      >
         {label}
       </Button>
       {error ? (

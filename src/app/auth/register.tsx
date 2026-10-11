@@ -1,6 +1,6 @@
 import { Link, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 
 import { GoogleSignInButton } from "@/components/account/google-button";
 import { Container } from "@/components/shared/container";
@@ -39,6 +39,12 @@ export default function RegisterScreen() {
 
   return (
     <Container contentClassName="flex-1 justify-center gap-sp-4 !px-6">
+      <View className="items-center">
+        <Image
+          source={require("../../../assets/images/icon.png")}
+          style={{ width: 88, height: 88, borderRadius: 44 }}
+        />
+      </View>
       <View className="gap-sp-1">
         <Text className="font-sans text-3xl font-bold text-foreground dark:text-foreground-dark">
           Create account
@@ -76,8 +82,7 @@ export default function RegisterScreen() {
         </Text>
       ) : null}
 
-      <Button disabled={busy} onPress={handleRegister}>
-        {busy ? <ActivityIndicator size="small" /> : null}
+      <Button loading={busy} onPress={handleRegister}>
         Create account
       </Button>
 

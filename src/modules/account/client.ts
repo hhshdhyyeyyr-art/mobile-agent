@@ -46,39 +46,39 @@ export const accountApi = {
   /** True if the backend answers at all (even 401 without token). False on network failure. */
   async ping(): Promise<boolean> {
     try {
-      await fetch(`${ACCOUNT_API_BASE_URL}/api/me.php`, { method: "GET" });
+      await fetch(`${ACCOUNT_API_BASE_URL}/api-me.php`, { method: "GET" });
       return true;
     } catch {
       return false;
     }
   },
   register(name: string, email: string, password: string): Promise<ApiResult> {
-    return api<ApiResult>("/api/register.php", {
+    return api<ApiResult>("/api-register.php", {
       method: "POST",
       body: { name, email, password },
     });
   },
   login(email: string, password: string): Promise<ApiResult> {
-    return api<ApiResult>("/api/login.php", {
+    return api<ApiResult>("/api-login.php", {
       method: "POST",
       body: { email, password },
     });
   },
   googleAuth(idToken: string): Promise<ApiResult> {
-    return api<ApiResult>("/api/google-auth.php", {
+    return api<ApiResult>("/api-google-auth.php", {
       method: "POST",
       body: { id_token: idToken },
     });
   },
   me(token: string): Promise<{ user: AccountUser }> {
-    return api<{ user: AccountUser }>("/api/me.php", { token });
+    return api<{ user: AccountUser }>("/api-me.php", { token });
   },
   deduct(
     token: string,
     amount: number,
     reason: string,
   ): Promise<{ tokens: number; plan: AccountUser["plan"] }> {
-    return api("/api/tokens.php", {
+    return api("/api-tokens.php", {
       method: "POST",
       token,
       body: { action: "deduct", amount, reason },
