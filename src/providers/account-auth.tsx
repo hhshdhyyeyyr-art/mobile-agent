@@ -20,6 +20,8 @@ type AccountContextValue = {
   /** false when ACCOUNT_API_BASE_URL is empty (auth disabled, app works as before) */
   enabled: boolean;
   loading: boolean;
+  /** null while checking, true when backend answers, false when unreachable */
+  backendUp: boolean | null;
   user: AccountUser | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
@@ -35,10 +37,12 @@ const AccountContext = createContext<AccountContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const enabled = isAccountEnabled();
   const [loading, setLoading] = useState(true);
+  const [backendUp, setBackendUp] = useState<boolean | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<AccountUser | null>(null);
 
-  // Restore session on start; drop it if the backend rejects the token.
+  // Check backend reachability, then restore session.
+  // If the backend is down, the app keeps working without auth (graceful).
   useEffect(() => {
     if (!enabled) {
       setLoading(false);
@@ -47,6 +51,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     (async () => {
       try {
+        const up = await accountApi.ping();
+        if (cancelled) return;
+        setBackendUp(up);
+        if (!up) return;
         const session = await loadSession();
         if (!session) return;
         try {
@@ -130,6 +138,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       enabled,
       loading,
+      backendUp,
       user,
       token,
       login,
@@ -142,6 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [
       enabled,
       loading,
+      backendUp,
       user,
       token,
       login,

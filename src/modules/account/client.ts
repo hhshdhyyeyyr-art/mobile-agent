@@ -43,6 +43,15 @@ async function api<T>(
 }
 
 export const accountApi = {
+  /** True if the backend answers at all (even 401 without token). False on network failure. */
+  async ping(): Promise<boolean> {
+    try {
+      await fetch(`${ACCOUNT_API_BASE_URL}/api/me.php`, { method: "GET" });
+      return true;
+    } catch {
+      return false;
+    }
+  },
   register(name: string, email: string, password: string): Promise<ApiResult> {
     return api<ApiResult>("/api/register.php", {
       method: "POST",

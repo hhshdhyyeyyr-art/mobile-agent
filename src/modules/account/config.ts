@@ -6,7 +6,7 @@
 // works exactly as before (no login gate, no token deduction).
 // ============================================================
 
-export const ACCOUNT_API_BASE_URL = "";
+export const ACCOUNT_API_BASE_URL = "https://weaponhost.in";
 
 export const GOOGLE_WEB_CLIENT_ID =
   "366420566057-aaho7rppppt6nrgs11phmuuontcjgtqf.apps.googleusercontent.com";

@@ -87,6 +87,14 @@ export default function LoginScreen() {
           </Text>
         </Pressable>
       </Link>
+
+      <Link href="/paywall" asChild>
+        <Pressable className="items-center py-sp-1">
+          <Text className="font-sans text-sm text-muted-foreground dark:text-muted-foreground-dark">
+            View <Text className="font-semibold text-foreground dark:text-foreground-dark">plans & pricing</Text>
+          </Text>
+        </Pressable>
+      </Link>
     </Container>
   );
 }
