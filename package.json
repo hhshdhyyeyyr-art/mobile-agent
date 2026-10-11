@@ -2,7 +2,7 @@
   "name": "Mobile Agent",
   "description": "An AI agent that runs on your phone.",
   "main": "index.js",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.7",
     "@ai-sdk/google": "^4.0.6",
@@ -24,6 +24,7 @@
     "expo-ai-kit": "0.11.1",
     "expo-audio": "~57.0.5",
     "expo-auth-session": "^57.0.1",
+    "@react-native-google-signin/google-signin": "^16.1.5",
     "expo-blur": "~57.0.2",
     "expo-build-properties": "~57.0.5",
     "expo-clipboard": "~57.0.0",

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "366420566057",
+    "firebase_url": "https://mobile-agent-6d7a9-default-rtdb.firebaseio.com",
+    "project_id": "mobile-agent-6d7a9",
+    "storage_bucket": "mobile-agent-6d7a9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366420566057:android:c9ae857d0b4d507a477c38",
+        "android_client_info": {
+          "package_name": "com.mobile.agent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "366420566057-aaho7rppppt6nrgs11phmuuontcjgtqf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhZc99JxEbVyh0t5g_sdwyPspN-Pqx_i8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "366420566057-aaho7rppppt6nrgs11phmuuontcjgtqf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
