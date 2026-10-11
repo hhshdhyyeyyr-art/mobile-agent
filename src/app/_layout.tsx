@@ -11,6 +11,7 @@ import {
   TOOL_APPROVAL_APPROVE_ACTION_ID,
   TOOL_APPROVAL_REJECT_ACTION_ID,
 } from "@/modules/notifications/run-notifications";
+import { AuthProvider } from "@/providers/account-auth";
 import {
   Geist_400Regular,
   Geist_500Medium,
@@ -293,11 +294,13 @@ export default function MainLayout() {
             >
               <AppStateProvider>
                 <UpdateProvider>
-                  <SplashScreenController ready={fontsReady} />
-                  <NotificationObserver />
-                  <InAppNotificationBanner />
-                  <ReleaseUpdateBanner />
-                  <Slot />
+                  <AuthProvider>
+                    <SplashScreenController ready={fontsReady} />
+                    <NotificationObserver />
+                    <InAppNotificationBanner />
+                    <ReleaseUpdateBanner />
+                    <Slot />
+                  </AuthProvider>
                 </UpdateProvider>
               </AppStateProvider>
             </SQLiteProvider>

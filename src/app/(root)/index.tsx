@@ -67,6 +67,7 @@ import {
   AttachmentTitle,
 } from "@/components/ui/attachment";
 import { Button } from "@/components/ui/button";
+import { TokenPill } from "@/components/account/token-pill";
 import { ChatErrorBoundary } from "@/components/ui/chat-error-boundary";
 import { ChatMessage } from "@/components/ui/chat-message";
 import {
@@ -110,9 +111,12 @@ import type {
   WorkspaceFile,
 } from "@/core/types/app-state";
 import { cn } from "@/core/utils";
+import type { SendMessageInput } from "@/core/types/app-state";
 import { useAppState } from "@/hooks/use-app-state";
 import { useChat } from "@/hooks/use-chat";
 import { useChatInfo } from "@/hooks/use-chat-info";
+import { TOKENS_PER_MESSAGE } from "@/modules/account/config";
+import { useAccount } from "@/providers/account-auth";
 import { useConfig } from "@/hooks/use-config";
 import { useTheme } from "@/hooks/use-theme";
 import { useVoiceInput } from "@/hooks/use-voice-input";
@@ -250,7 +254,7 @@ export default function Screen() {
     pendingQuestionnaire,
     pendingSecretRequest,
     pickConversationFolder,
-    sendMessage,
+    sendMessage: sendMessageRaw,
     stopSending,
     submitPendingQuestionnaire,
     dismissPendingQuestionnaire,
@@ -271,6 +275,38 @@ export default function Screen() {
     conversationAgentName,
     setConversationAgent,
   } = useChat();
+  const { enabled: accountEnabled, user: accountUser, deductTokens } =
+    useAccount();
+
+  // Token-gated send: block when out of tokens, deduct per message otherwise.
+  // When the account backend is not configured, this is a pass-through.
+  const sendMessage = useCallback(
+    async (input: SendMessageInput) => {
+      if (accountEnabled && accountUser) {
+        const unlimited =
+          accountUser.plan === "premium" || accountUser.tokens < 0;
+        if (!unlimited && accountUser.tokens < TOKENS_PER_MESSAGE) {
+          Alert.alert(
+            "Tokens khatam ho gaye",
+            "Aage chat karne ke liye apna plan upgrade karo.",
+            [
+              { text: "Baad me", style: "cancel" },
+              {
+                text: "Plans dekho",
+                onPress: () => router.push("/paywall"),
+              },
+            ],
+          );
+          return;
+        }
+        await sendMessageRaw(input);
+        deductTokens(TOKENS_PER_MESSAGE, "ai message").catch(() => {});
+        return;
+      }
+      await sendMessageRaw(input);
+    },
+    [accountEnabled, accountUser, deductTokens, sendMessageRaw, router],
+  );
   const currentConversationBusy =
     currentConversationRunStatus === "queued" ||
     currentConversationRunStatus === "running" ||
@@ -440,16 +476,19 @@ export default function Screen() {
                 <Edit color={theme.text} size={20} />
               </Button>
             </View>
-            <Button
-              accessibilityLabel="Chat info"
-              onPress={() => {
-                setInfoDrawerOpen(true);
-              }}
-              size="icon"
-              variant="ghost"
-            >
-              <Info color={theme.text} size={20} />
-            </Button>
+            <View className="flex-row items-center gap-sp-2">
+              <TokenPill />
+              <Button
+                accessibilityLabel="Chat info"
+                onPress={() => {
+                  setInfoDrawerOpen(true);
+                }}
+                size="icon"
+                variant="ghost"
+              >
+                <Info color={theme.text} size={20} />
+              </Button>
+            </View>
           </View>
 
           <View className="relative flex-1">
