@@ -1257,6 +1257,9 @@ export const ChatMessage = memo(function ChatMessage({
   const attachedFiles = (message.metadata?.selectedFileIds ?? [])
     .map((fileId) => workspaceFiles.find((file) => file.id === fileId))
     .filter((file): file is WorkspaceFile => file !== undefined);
+  const createdFiles = (message.metadata?.createdFileIds ?? [])
+    .map((fileId) => workspaceFiles.find((file) => file.id === fileId))
+    .filter((file): file is WorkspaceFile => file !== undefined);
   const hasUserAttachments = isUser && attachedFiles.length > 0;
   const fileHeaderConnected = hasUserAttachments && Boolean(message.content);
   const reasoningBlocks = message.metadata?.reasoning ?? [];
@@ -1574,6 +1577,55 @@ export const ChatMessage = memo(function ChatMessage({
                           </View>
                         </Pressable>
                       ))}
+                    </View>
+                  ) : null}
+                  {createdFiles.length > 0 ? (
+                    <View className="gap-sp-2">
+                      {createdFiles.map((file) => {
+                        const opening = openingFileId === file.id;
+                        const FileTypeIcon = getFileTypeIcon(file);
+
+                        return (
+                          <Pressable
+                            accessibilityHint="Open the created file to preview or download it"
+                            accessibilityLabel={file.displayName}
+                            accessibilityRole="button"
+                            disabled={opening}
+                            key={file.id}
+                            className="w-full flex-row items-center gap-sp-2 rounded-ui border border-border bg-card px-sp-2 py-sp-2 dark:border-border-dark dark:bg-card-dark"
+                            onPress={() => {
+                              handleOpenFile(file).catch(console.error);
+                            }}
+                            style={({ pressed }) =>
+                              pressed ? { opacity: 0.72 } : null
+                            }
+                          >
+                            <View className="h-8 w-8 shrink-0 items-center justify-center rounded-md bg-secondary dark:bg-secondary-dark">
+                              <FileTypeIcon
+                                color={theme.textSecondary}
+                                size={16}
+                              />
+                            </View>
+                            <Text
+                              className="min-w-0 flex-1 font-sans text-sm font-medium text-foreground dark:text-foreground-dark"
+                              numberOfLines={1}
+                            >
+                              {file.displayName}
+                            </Text>
+                            {opening ? (
+                              <ActivityIndicator
+                                color={theme.textSecondary}
+                                size="small"
+                              />
+                            ) : (
+                              <Download
+                                color={theme.textSecondary}
+                                size={16}
+                              />
+                            )}
+                          </Pressable>
+                        );
+                      })}
                     </View>
                   ) : null}
                   {message.status === "streaming" && !hasRunningTermuxRun ? (

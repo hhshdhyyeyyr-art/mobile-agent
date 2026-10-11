@@ -6,6 +6,7 @@ import type { WorkspaceToolFactoryParams } from "@/modules/tools/built-in/types"
 import { createWorkspaceFileService } from "@/core/services/workspace-file-service";
 
 export function createCreateFileTool({
+  onFileCreated,
   onRecord,
   repository,
 }: WorkspaceToolFactoryParams) {
@@ -35,6 +36,8 @@ export function createCreateFileTool({
           link: `workspace://${file.id}`,
           size: file.size,
         };
+
+        onFileCreated?.({ displayName: file.displayName, id: file.id });
 
         onRecord?.(
           createRecord({

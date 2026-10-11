@@ -22,6 +22,7 @@ type DownloadFileToolFactoryParams = WorkspaceToolFactoryParams & {
 };
 
 export function createDownloadFileTool({
+  onFileCreated,
   onProgress,
   onRecord,
   repository,
@@ -134,6 +135,11 @@ export function createDownloadFileTool({
           size: downloadedFile.size,
           relativePath: downloadedFile.relativePath,
         };
+
+        onFileCreated?.({
+          displayName: downloadedFile.displayName,
+          id: downloadedFile.id,
+        });
 
         onRecord?.(
           createRecord({

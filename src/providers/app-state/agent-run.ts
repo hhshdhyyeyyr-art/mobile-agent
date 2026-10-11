@@ -658,6 +658,14 @@ export async function executeClaimedAgentRun(
   const toolExecutions = [
     ...(assistantMessage.metadata?.toolExecutions ?? []),
   ] as ToolExecutionRecord[];
+  const createdFileIds = [
+    ...(assistantMessage.metadata?.createdFileIds ?? []),
+  ] as string[];
+  const recordCreatedFileId = (fileId: string) => {
+    if (!createdFileIds.includes(fileId)) {
+      createdFileIds.push(fileId);
+    }
+  };
   const termuxRunAnchors = new Map(
     (assistantMessage.metadata?.termuxRunAnchors ?? []).map((anchor) => [
       anchor.executionId,
@@ -1244,6 +1252,7 @@ export async function executeClaimedAgentRun(
 
             const workspaceDiscoveryTools = createWorkspaceTools({
               repository: repositories.workspaceRepository,
+              onFileCreated: (file) => recordCreatedFileId(file.id),
               onRecord: handleToolExecutionRecord,
             }).tools;
 
@@ -1257,6 +1266,7 @@ export async function executeClaimedAgentRun(
             const workspaceTools = createWorkspaceTools({
               repository: repositories.workspaceRepository,
               session: activeFolderSession,
+              onFileCreated: (file) => recordCreatedFileId(file.id),
               onRecord: handleToolExecutionRecord,
               onProgress: () => markActivity(),
             }).tools;
@@ -1559,6 +1569,9 @@ export async function executeClaimedAgentRun(
         "importFolderFileToWorkspace" in builtInRuntimeTools)
         ? buildTransferSystemPrompt(activeFolderSession as ExternalFolderSession)
         : undefined;
+    const imageCapabilityRuntimeSystem = resolvedModel.supportsImageGeneration
+      ? "You can generate images. When the user asks you to create or generate an image, generate it directly — it will appear in the chat automatically with download and share options."
+      : "You cannot generate images with the current model. If the user asks you to create or generate an image, briefly explain that the current model does not support image generation and suggest selecting an image-capable model in Settings > Providers.";
     const selectedFilesContext = useInlineFileContext
       ? await buildSelectedFilesInlineContext({
           repository: repositories.workspaceRepository,
@@ -1637,6 +1650,7 @@ export async function executeClaimedAgentRun(
         buildCurrentDateTimeSystemPrompt(),
         builtInRuntimeSystem,
         workspaceRuntimeSystem,
+        imageCapabilityRuntimeSystem,
         transferRuntimeSystem,
         mcpRuntime?.systemPrompt,
         memoryRuntimeSystem,
@@ -1999,6 +2013,7 @@ export async function executeClaimedAgentRun(
     });
     const assistantMetadata = buildAssistantMetadata({
       appliedSkillIds,
+      createdFileIds,
       executionTimeline: [
         ...executionTimeline,
         createExecutionTimelineEvent({

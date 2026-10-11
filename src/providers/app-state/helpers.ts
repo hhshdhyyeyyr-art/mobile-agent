@@ -474,6 +474,7 @@ export function buildUsageSnapshot(input: {
 
 export function buildAssistantMetadata(input: {
   appliedSkillIds?: string[];
+  createdFileIds?: string[];
   executionTimeline?: ExecutionTimelineEvent[];
   generatedImages?: GeneratedImageAttachment[];
   memoryEvents?: MemoryEvent[];
@@ -493,6 +494,10 @@ export function buildAssistantMetadata(input: {
 
   if (input.appliedSkillIds && input.appliedSkillIds.length > 0) {
     metadata.appliedSkillIds = input.appliedSkillIds;
+  }
+
+  if (input.createdFileIds && input.createdFileIds.length > 0) {
+    metadata.createdFileIds = input.createdFileIds;
   }
 
   if (input.executionTimeline && input.executionTimeline.length > 0) {
